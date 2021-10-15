@@ -9706,7 +9706,7 @@ body:not(.device-touch) .button.button-full strong {
 .fbox-content p {
 	margin-top: 0.5rem;
 	margin-bottom: 0px;
-	color: white;
+	color: #999;
 }
 
 .fbox-content .before-heading {
@@ -17045,4 +17045,9 @@ input.switch-toggle-flat:checked + label::after,
 	}
 }
 
+@media only screen and (max-width: 880px) {
+	.no-min {
+	  display: none !important;
+	}
+  }
 

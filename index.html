@@ -3,6 +3,8 @@
 <head>
 
 	<script>
+
+  window.dataLayer = window.dataLayer || [];
 		// Measures product impressions and also tracks a standard
 		// pageview for the tag configuration.
 		// Product impressions are sent by pushing an impressions object
@@ -175,7 +177,7 @@ window.dataLayer.push({
 						</div>
 
 						<div class="header-misc order-3">
-							<a href="#contacto" class="btn text-larger btn-dark bg-color px-4 py-2 rounded-pill"><i class="icon-line-message-circle color-2"></i><span class="d-none d-md-inline ms-2">Pide presupuesto</span></a>
+							<a href="#contacto" class="btn text-larger btn-dark bg-color px-4 py-2 rounded-pill no-min"><i class="icon-line-message-circle color-2"></i><span class="d-none d-md-inline ms-2">Pide presupuesto</span></a>
 						</div>
 
 						<!-- Primary Navigation
@@ -190,10 +192,6 @@ window.dataLayer.push({
 							</ul>
 							-->
 						</nav><!-- #primary-menu end -->
-
-						<form class="top-search-form" action="search.html" method="get">
-							<input type="text" name="q" class="form-control" value="" placeholder="Type &amp; Hit Enter.." autocomplete="off">
-						</form>
 
 					</div>
 				</div>
@@ -229,7 +227,7 @@ window.dataLayer.push({
 						</div>
 
 					</div>
-					<div class="col-lg-7 align-self-center dotted-bg">
+					<div class="col-lg-7 align-self-center dotted-bg no-min">
 						<img src="images/girl.png" alt="Image 1" class="d-flex align-self-end mt-5 z-1 mx-auto w-75 position-relative">
 					</div>
 				</div>
@@ -430,7 +428,7 @@ window.dataLayer.push({
 									<h4 class="nott font-body fw-normal mb-0"><a class="text-white" href="mailto:inter.pool@hotmail.com">inter.pool@hotmail.com</a></h4>
 								</div>
 							</div>
-							<div class="feature-box fbox-sm">
+							<div class="feature-box fbox-sm" style="padding-bottom:25px;">
 								<div class="fbox-icon">
 									<i class="icon-line-clock bg-color-2 color"></i>
 								</div>
