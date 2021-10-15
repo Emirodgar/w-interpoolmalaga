@@ -9706,7 +9706,7 @@ body:not(.device-touch) .button.button-full strong {
 .fbox-content p {
 	margin-top: 0.5rem;
 	margin-bottom: 0px;
-	color: #999;
+	color: white;
 }
 
 .fbox-content .before-heading {
