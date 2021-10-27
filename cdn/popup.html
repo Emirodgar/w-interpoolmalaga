@@ -1,0 +1,567 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0062)chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html -->
+<html xml:lang="es" lang="es" xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<style>
+		html,
+		body {
+		  margin: 0 !important;
+		  padding:0 !important;
+		  color: #323a45 !important;
+		  background-color: #f1f1f1 !important;
+		  overflow-x: hidden;
+		}
+
+		iframe {
+			border: 0 !important;
+    		padding: 0 !important;
+    		display:none !important;
+    		min-width:400px !important;
+		}
+
+		.erg_offset {
+			position: absolute !important;
+    		left: -5000px !important;
+		}
+
+		.erg_scroll::-webkit-scrollbar {
+		  width: 4px;
+		  height: 4px;
+		}
+		.erg_scroll::-webkit-scrollbar-thumb {
+		  background: #ccc;
+		  border-radius: 4px;
+		}
+		.erg_scroll::-webkit-scrollbar-thumb:active {
+		  background-color: #999999;
+		}
+		.erg_scroll::-webkit-scrollbar-thumb:hover {
+		  background: #b3b3b3;
+		  box-shadow: 0 0 2px 1px rgba(0, 0, 0, 0.2);
+		}
+		.erg_scroll::-webkit-scrollbar-track {
+		  background: #e1e1e1;
+		  border-radius: 4px;
+		}
+		.erg_scroll::-webkit-scrollbar-track:hover,
+		.erg_scroll::-webkit-scrollbar-track:active {
+		  background: #d4d4d4;
+		}
+
+		.erg_menu {
+		  height: 100vh;
+		  width: 80px;
+		  display: inline-block;
+		  position: fixed;
+		  border-right: 1px solid #d6d7d9;
+		  border-left: 1px solid #d6d7d9;
+		  background-color: #fff;
+		  box-shadow: 0 1px 6px 2px rgba(32,33,36,0.28);
+		  z-index:9999;
+		  right:1px;
+		}
+
+		.erg_menu-logo {
+		  color: gray;
+		  font-size: 30px;
+		  padding: 10px 25px;
+		  border-bottom: 1px solid #d6d7d9;
+		  height: 40px;
+		}
+
+		.erg_menu-options{
+			border-top: 1px solid #d6d7d9;
+			padding-top:10px;
+		}
+
+		input#switchContent[type=checkbox]{
+			height: 0;
+			width: 0;
+			visibility: hidden;
+		}
+
+		#labelContent {
+			cursor: pointer;
+			text-indent: -9999px;
+			width: 100%;
+			height: 21px;
+			background: grey;
+			display: block;
+			border-radius: 100px;
+			position: relative;
+		}
+
+		#labelContent:after {
+			content: '';
+			position: absolute;
+			top: 3px;
+			left: 5px;
+			width: 15px;
+			height: 15px;
+			background: #fff;
+			border-radius: 15px;
+			transition: 0.3s;
+		}
+
+		input#switchContent:checked + label {
+			background: #bada55;
+		}
+
+		input#switchContent:checked + label:after {
+			left: calc(100% - 5px);
+			transform: translateX(-100%);
+		}
+
+		#labelContent:active:after {
+			width: 50%;
+		}
+
+		.erg_menu-links {
+		  list-style-type: none;
+		  margin: 0;
+		  padding: 0;
+		}
+
+		.erg_menu-links li a {
+		  font-size: 25px;
+		  display: block;
+		  color: #5b616b;
+		  padding: 15px 25px;
+		  text-decoration: none;
+		}
+
+		.erg_menu-links li a:hover {
+		  background-color: #f1f1f1;
+		  color: #323a45;
+		}
+
+		.active {
+			background-color: #f1f1f1;
+			color: #323a45;
+		}
+		.orange { color: #fc6700;}
+		.red { color: red;}
+		.green { color: green;}
+
+		.erg_messages-container {
+			position: relative;
+			float: left;
+			width: 308px;
+			height: 100%;
+			z-index: 1;
+			overflow: hidden;
+			box-shadow: 20px 0 30px -25px rgba(0, 0, 0, 0.1);
+		}
+
+		.erg_message-list {
+			list-style-type: none;
+			padding: 0;
+			margin: 0;
+		}
+
+		.erg_message-item {
+			position: relative;
+			padding: 15px;
+			transition: 300ms ease;
+			border-bottom: 1px solid #eeeeee;
+			.header {
+				display: flex;
+				align-items: flex-end;
+				justify-content: space-between;
+				.author {
+					margin: 0;
+					font-size: 0.9em;
+				}
+				.date {
+					font-size: 0.7em;
+				}
+			}
+			.title {
+				margin: 0;
+				font-size: 1em;
+				text-overflow: ellipsis;
+				word-break: break-word;
+				white-space: nowrap;
+				overflow: hidden;
+			}
+			.text {
+				font-size: 0.9em;
+				text-overflow: ellipsis;
+				word-break: break-word;
+				white-space: nowrap;
+				overflow: hidden;
+				margin: 0;
+			}
+			&.not-readed {
+				background-color: rgba(0, 0, 0, 0.08);
+			}
+			&:hover {
+				background-color:rgba(0, 0, 0, 0.04);
+			}
+		}
+
+		.erg_message-item::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3px;
+			height: 100%;
+			background-image: linear-gradient( 135deg, #46b22c 10%, #42670c 100%);
+		}
+
+		.erg_message-item.warning::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3px;
+			height: 100%;
+			background-image: linear-gradient( 135deg, #F4A562 10%, #DE5B2A 100%);
+		}
+
+		.erg_message-item.error::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3px;
+			height: 100%;
+			background-image: linear-gradient( 135deg, #ea3812 10%, #831b04 100%);
+		}
+
+		.erg_message-item.erg_loption::after {
+			content: "";
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 3px;
+			height: 100%;
+			background-image: linear-gradient( 135deg, #202124 10%, #202120 100%);
+		}
+
+		.erg_message-item:hover {background-color: #F1FAE9;}
+		.error:hover { background-color: #FAEAE9;}
+		.warning:hover { background-color: #FAF4E9;}
+		.erg_loption:hover {background-color: rgba(0, 0, 0, 0.02);}
+
+		.erg_button_moreInfo {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			outline: 0;
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			background-color: #EDEDED;
+			width: 120px;
+			border-radius: 3px;
+			display: block;
+			text-align: center;
+			font-size: 12px;
+			color: black;
+			transition-duration: 0.25s;
+			text-decoration:none;
+			float:right;
+			padding:3px;
+		}
+		.erg_button_external {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			outline: 0;
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			background-color: lightslategray;
+			width: 120px;
+			border-radius: 3px;
+			display: block;
+			text-align: center;
+			font-size: 12px;
+			color: white;
+			transition-duration: 0.25s;
+			text-decoration:none;
+			padding:3px;
+			cursor: pointer;
+			margin-top:5px;
+		}
+		.erg_button_external_active {
+			-webkit-appearance: none;
+			-moz-appearance: none;
+			outline: 0;
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			background-color: darkorange;
+			width: 120px;
+			border-radius: 3px;
+			display: block;
+			text-align: center;
+			font-size: 12px;
+			color: white;
+			transition-duration: 0.25s;
+			text-decoration:none;
+			padding:3px;
+			cursor: pointer;
+		}
+		.erg_filter {
+			outline: none;
+    border: none;
+	display:block;
+	width: 100%;
+    background: #fff;
+    border-radius: 31px;
+    font-size: 14px;
+    color: #8f8fa1;
+    line-height: 1.2;
+	padding: 0 15px;
+	height: 32px;
+		}
+
+		 input {
+    width: 100%;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;         /* Opera/IE 8+ */
+  }
+
+	</style>
+		<link rel="stylesheet" href="./all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+	</head>
+	<body class="erg_scroll">
+		<div class="erg_menu">
+			<div class="erg_menu-logo">
+				<i id="logo" class="fas fa-hashtag orange"></i>
+			</div>
+			<ul class="erg_menu-links">
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_dashboard" title="Recomendaciones SEO"><i class="fas fa-desktop"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_checklist" title="Validaciones"><i class="fas fa-tasks"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_tools" title="Herramientas"><i class="fas fa-link"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_news" title="Noticias"><i class="fas fa-bullhorn"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_google" title="Algoritmo Google"><i class="fab fa-google"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_podcasts" title="Podcasts"><i class="fas fa-headphones"></i></a></li>
+				<li><a class="iconLink" href="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.html#d_contact" title="Contacto"><i class="fas fa-user-circle"></i></a></li>
+				<!--
+		<li><a class="iconLink" title="Web analytics" href="#"><i class="fas fa-chart-line"></i></a></li>
+		<li><a class="iconLink" title="DOM inspect" href="#"><i class="fas fa-code"></i></a></li>
+		<li><a class="iconLink" title="SEO audit check" href="#"><i class="fas fa-list"></i></a></li>
+		<li><a class="iconLink" title="Google algorthym" href="#"><i class="fab fa-google"></i></a></li>
+		<li><a class="iconLink" title="SEO Tools" href="#"><i class="fas fa-inbox"></i></a></li>
+		<li><a class="iconLink" title="Google algorthym" href="#"><i class="fas fa-user-circle"></i></a></li>
+		<li><a class="iconLink" href="#d_gSettings"><i class="fas fa-cog"></i></a></li>-->
+			</ul>
+			<div style="padding:15px;">
+				<div class="erg_menu-options">
+					<input type="checkbox" id="switchContent"><label id="labelContent" for="switchContent" title="Ocultar texto">Toggle</label>
+				</div>
+			</div>
+		</div>
+
+		<div id="d_dashboard" class="erg_messages-container">
+			<ul class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+				<li class="erg_message-item erg_lf warning">
+					<div class="header">
+						<span class="date">Prioridad <b>alta</b> <a class="erg_button_moreInfo" target="_blank" href="https://emirodgar.com/etiqueta-canonica">Más información</a></span>
+					</div>
+					<h2 id="erg_index_status" class="title">Posible problema etiqueta canonical </h2>
+					<p class="text" id="erg_index">La URL principal es https://www.interpoolmalaga.com/ pero la etiqueta canónica apunta a https://www.interpoolmalaga.com. La diferencia es únicamente '/'. Esto no debería causar ningún problema pero sería conveniente revisar en Google Search Console que la URL se está indexando de forma correcta.</p>
+					<button id="erg_act_site" href="#" class="erg_button_external">Ver indexadas</button>
+					<button id="erg_act_site_amp" href="#" style="display:none" class="erg_button_external">Ver AMP</button>
+					<span id="test"></span>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>alta</b> <a class="erg_button_moreInfo" target="_blank" href="https://emirodgar.com/titulos-descripciones-seo#meta-title">Más información</a></span>
+					</div>
+					<h2 id="erg_title_status" class="title">Título (meta title)</h2>
+					<p class="text" id="erg_title">El título actual es "Mantenimiento de Piscinas en Málaga INTER POOL" compuesto por 46 caracteres. Un título adecuado debería tener  entre 50 y 60 caracteres además de hacer uso de las palabras clave por las que queremos posicionarnos. </p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>alta</b> <a class="erg_button_moreInfo" target="_blank" href="https://emirodgar.com/relacion-titulo-h1">Más información</a></span>
+					</div>
+					<h2 id="erg_similarity_status" class="title">Contexto adecuado</h2>
+					<p class="text" id="erg_similarity">Comparando el título y el H1 vemos que hay una similitud respecto al mensaje que estamos transmitiendo. Ambos son dos factores relevantes para el SEO por lo que deben ir alineados.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>media</b> <a class="erg_button_moreInfo" target="_blank" href="https://www.youtube.com/watch?v=GIn5qJKU8VM&amp;feature=emb_logo">Más información</a></span>
+					</div>
+					<h2 id="erg_h1_status" class="title">Encabezados</h2>
+					<p class="text" id="erg_h1"> La cabecera H1 de la página es "Mantenimiento Y REPARACION de piscinas en Málaga". En la página hay 2 cabeceras H2 y 3 cabeceras H3.</p>
+					<button id="erg_act_headers" href="#" class="erg_button_external erg_button">Identificar</button>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>media</b> <a class="erg_button_moreInfo" target="_blank" href="https://www.mattcutts.com/blog/how-many-links-per-page/">Más información</a></span>
+					</div>
+					<h2 id="erg_links_status" class="title">Enlaces</h2>
+					<p class="text" id="erg_links"> Esta página contiene 26 enlaces internos y 1 enlaces externos. El número es correcto y está alineado con las recomendaciones de Google.</p>
+					<button id="erg_act_links" href="#" class="erg_button_external erg_button">Identificar</button>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>media</b> <a class="erg_button_moreInfo" target="_blank" href="https://emirodgar.com/optimizacion-imagenes-seo">Más información</a></span>
+					</div>
+					<h2 id="erg_images_status" class="title">Imágenes</h2>
+					<p class="text" id="erg_images">Se han detectado 2 imágenes en la página. Las imágenes ayudan a los buscadores a cualificar el contenido además de que nos facilitan la captación de tráfico a través de buscadores específicos.</p>
+					<button id="erg_act_images" href="#" class="erg_button_external erg_button">Identificar</button>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>media</b> <a class="erg_button_moreInfo" target="_blank" href="https://webmasters.googleblog.com/2016/11/heres-to-more-https-on-web.html">Más información</a></span>
+					</div>
+					<h2 id="erg_https_status" class="title">Protocolo seguro</h2>
+					<p class="text" id="erg_https"> La página funciona bajo HTTPS lo que implica que la comunicación está cifrada y es segura. Aunque no es factor SEO directo sí es relevante para la estrategia digital.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>media</b> <a class="erg_button_moreInfo" target="_blank" href="https://www.sistrix.es/preguntale-a-sistrix/que-considera-google-como-contenido-de-alta-calidad/">Más información</a></span>
+					</div>
+					<h2 id="erg_content_status" class="title">Contenido </h2>
+					<p class="text" id="erg_content">El contenido analizado es correcto. Se han encontrado NaN palabras dentro de la página por lo que la densidad es correcta.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>baja</b> <a class="erg_button_moreInfo" target="_blank" href="https://emirodgar.com/titulos-descripciones-seo#meta-description">Más información</a></span>
+					</div>
+					<h2 id="erg_description_status" class="title">Etiqueta Meta descripción </h2>
+					<p class="text" id="erg_description"> Aunque no es un factor de posicionamiento SEO, sí ayuda a generar visibilidad y captar tráfico. La meta descripción actual es "Mantenimiento de piscinas de todos los tipos. En INTER POOL somos especialistas en reparaciones y limpiezas de piscinas en Málaga y provincia. ¡Llámanos ya!" y tiene 156 caracteres.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>baja</b> <a class="erg_button_moreInfo" target="_blank" href="https://support.google.com/webmasters/answer/9063469?hl=es">Más información</a></span>
+					</div>
+					<h2 id="erg_viewport_status" class="title">Etiqueta Viewport </h2>
+					<p class="text" id="erg_viewport">Se ha encontrado la meta etiqueta Viewport con los siguientes valores: width=device-width, initial-scale=1</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>baja</b> <a class="erg_button_moreInfo" target="_blank" href="https://support.google.com/webmasters/answer/189077?hl=es-419">Más información</a></span>
+					</div>
+					<h2 id="erg_lang_status" class="title">Idioma especificado </h2>
+					<p class="text" id="erg_lang">Se ha detectado como idioma principal de la página el 'es'. Se ha configurado a través de un atributo en la etiqueta HTML.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<div class="header">
+						<span class="date">Prioridad <b>baja</b> <a class="erg_button_moreInfo" target="_blank" href="https://ogp.me/">Más información</a></span>
+					</div>
+					<h2 id="erg_og_status" class="title">Open graph </h2>
+					<p class="text" id="erg_og"> Se ha detectado el código de Open graph en esta página. El título se ha definido como "Mantenimiento de Piscinas en Málaga INTER POOL".</p>
+				</li>
+			</ul>
+		</div>
+
+		<div id="d_checklist" class="erg_messages-container" style="display:none;">
+			<ul class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar versión móvil</h2>
+					<p class="text">Comprueba que tu página web se adapta sin problema a los dispositivos móviles.</p>
+					<a target="_blank" href="https://search.google.com/test/mobile-friendly?url=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar tiempo de carga</h2>
+					<p class="text">El tiempo de carga es esencial para ofrecer una buena experiencia a nuestros usuarios y también para favorecer la estrategia SEO.</p>
+					<a target="_blank" href="https://developers.google.com/speed/pagespeed/insights/?url=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar datos estructurados</h2>
+					<p class="text">Comprueba que todos los datos estructurados existentes en la URL son correctos.</p>
+					<a target="_blank" href="https://search.google.com/structured-data/testing-tool/u/0/?hl=es#url=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar datos enriquecidos</h2>
+					<p class="text">Valida si tu página puede hacer uso de los datos estructurados para que sean mostrados en los resultados de búsqueda.</p>
+					<a target="_blank" href="https://search.google.com/test/rich-results?url=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar AMP</h2>
+					<p class="text">Comprueba que tu código AMP es correcto y cumple con la validación de Google. </p>
+					<a target="_blank" href="https://search.google.com/test/amp?url=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar contenido duplicado</h2>
+					<p class="text">Verifica si existe contenido duplicado de esta página en otros dominios que pudiera afectar a la estrategia SEO. </p>
+					<a target="_blank" href="https://www.copyscape.com/?q=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar enlaces</h2>
+					<p class="text">Verifica si existen enlaces rotos dentro de la página web. </p>
+					<a target="_blank" href="http://validator.w3.org/checklink?uri=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar idioma y codificación</h2>
+					<p class="text">Verifica idioma de la página web y codificación asociada. </p>
+					<a target="_blank" href="https://validator.w3.org/i18n-checker/check?uri=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar HTML/CSS</h2>
+					<p class="text">Disponer de un código HTML y CSS limpio y sin errores favorecerá la correcta extracción de información por parte de buscadores y usuarios.</p>
+					<a target="_blank" href="https://validator.w3.org/unicorn/check?ucn_uri=https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Validar versiones anteriores</h2>
+					<p class="text">Analiza cómo ha evolucionado la página web durante los últimos años. </p>
+					<a target="_blank" href="https://web.archive.org/web/*/https://www.interpoolmalaga.com/" class="erg_button_external erg_button_val">Validar</a>
+				</li>
+			</ul>
+		</div>
+
+		<div id="d_tools" class="erg_messages-container" style="display:none;">
+			<ul id="erg_tools_list" class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+			<li class="erg_message-item erg_lf"><h2 class="title">Eliminar URLs en Google</h2><p class="text">Herramienta para eliminar URLs indexadas dentro de Google.</p><a href="https://www.google.com/webmasters/tools/url-removal" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Probador de robots.txt</h2><p class="text">Prueba el código de tu fichro robots.txt a través de esta herramienta antes de ponerlo en funcionamiento en tu web.</p><a href="https://www.google.com/webmasters/tools/robots-testing-tool" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">SemRush sensor</h2><p class="text">Monitoriza diversas categorías y mercados para saber si existe un cambio en posiciones, lo que podría significar una actualización del algoritmo de Google.</p><a href="https://es.semrush.com/sensor/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Análisis de enlaces</h2><p class="text">Analiza el perfil de enlazado (backlinks) de un dominio.</p><a href="https://app.neilpatel.com/es/seo_analyzer/backlinks" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Análisis DA y PA (Moz)</h2><p class="text">Analiza las métricas asociadas a los enlaces DA (Domain Authority) y PA (Page Authority) de cualquier dominio.</p><a href="https://www.seoweather.com/domain-authority-checker/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Verifica penalizaciones SEO</h2><p class="text">Cruza la información de visibilidad SEO de un dominio con los cambios de algoritmo de los buscadores para conocer si ha habido penalización.</p><a href="https://feinternational.com/website-penalty-indicator/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Estadísticas de rastreo</h2><p class="text">Obtén la frecuencia y otras métricas relacionadas con el rastreo de Google a tu sitio web.</p><a href="https://www.google.com/webmasters/tools/crawl-stats" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Parámetros de URL</h2><p class="text">Informa a Google acerca de cómo debe interpretar los diferentes parámetros de tu sitio web.</p><a href="https://www.google.com/webmasters/tools/crawl-url-parameters" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Búsquedas geolocalizadas</h2><p class="text">Simula búsquedas geolocalizadas por ubicación exacta o por país.</p><a href="https://serps.com/tools/google-search-location/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Validación etiquetas hreflang</h2><p class="text">Verifica que tus etiquetas hreflang están bien implementadas y que no hay ningún problema relacionado con los idiomas.</p><a href="https://www.google.com/webmasters/tools/i18n" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">hreflang Tags Testing Tool</h2><p class="text">Valida tanto la etiqueta hreflang de una URL como el resto de opciones a las que estemos apuntando.</p><a href="https://technicalseo.com/tools/hreflang/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Marcador de datos estructurados</h2><p class="text">A través de este asistente facilitamos a Google la extracción de información relevante para nuestro posicionamiento.</p><a href="https://www.google.com/webmasters/markup-helper/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Generador de datos estructurados JSON-LD</h2><p class="text">Plantillas para generar rápidamente diversos tipos de datos estructurados en formato JSON-LD. Evita errores y avanza rápido.</p><a href="https://technicalseo.com/tools/schema-markup-generator/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">RankRanger - Generador de datos estructurados</h2><p class="text">Selecciona el tipo de dato estructurado que quieres generar y rellena los campos asociados. Rápido y eficiente.</p><a href="https://www.rankranger.com/schema-markup-generator" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Generador de redirecciones 301</h2><p class="text">Genera el código necesario para aplicar redirecciones 301 en múltiples lenguajes y servidores.</p><a href="https://www.rapidtables.com/web/tools/redirect-generator.html" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Generador de Sitemaps XML</h2><p class="text">Genera de forma sencilla y rápida un sitemap XML de cualquier sitio web.</p><a href="https://www.xml-sitemaps.com/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Ajustes de privacidad</h2><p class="text">A través de esta herramienta podremos definir la privacidad que queremos en nuestra cuenta de Google.</p><a href="https://myaccount.google.com/privacycheckup/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Datos a registrar</h2><p class="text">Identifica qué tipo de información quieres compartir con Google para mejorar la experiencia de varios de sus productos.</p><a href="https://myaccount.google.com/data-and-personalization" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Descarga tus datos</h2><p class="text">Google nos ofrece la posibilidad de descargar toda la información que tiene almacenada de nuestro perfil de usuario.</p><a href="https://support.google.com/accounts/answer/3024190?hl=en" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Way Back Machine</h2><p class="text">El repositorio más grande de internet para analizar cómo era una página web en el pasado.</p><a href="https://web.archive.org/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Google trends</h2><p class="text">Analiza tendencias de búsqueda de diversos términos en múltiples mercados.</p><a href="https://trends.google.es/trends/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Análisis de mercados</h2><p class="text">Con Market Finder podrás ientificar y analizar potenciales mercados a los que llegar con tu empresa.</p><a href="https://marketfinder.thinkwithgoogle.com/intl/es_es/discovery/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">PurifyCSS</h2><p class="text">Get the CSS code you are using on your website and delete the unused so your file became lighter.</p><a href="https://purifycss.online/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">MinimalCSS</h2><p class="text">Aplicación que unifica todos los CSS en un único fichero y que elimina el código que no estemos usando.</p><a href="https://minimalcss.app/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Validador HTML</h2><p class="text">Valida y formatea el código HTML para evitar errores y optimizar la carga de una web.</p><a href="https://htmlformatter.com/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Validar JSON</h2><p class="text">Valida, formatea y comprime cualquier archivo JSON</p><a href="https://jsonformatter.org/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li><li class="erg_message-item erg_lf"><h2 class="title">Renderizado web</h2><p class="text">Fetch &amp; Render nos permite emular el acceso y rederizado a cualquier URL. Una gran alternativa a Google Search Console.</p><a href="https://technicalseo.com/tools/fetch-render/" target="_blank" class="erg_button_external">Usar herrmamienta</a></li></ul>
+		</div>
+		<div id="d_news" class="erg_messages-container" style="display:none;">
+			<ul id="erg_news_list" class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+			<li class="erg_message-item erg_lf"><span class="date">Agosto 2020</span><h2 class="title">Google chrome identificará a las páginas rápidas</h2><p class="text">Para ayudar a los usuarios a identificar páginas con un gran tiempo de carga, Chrome mostrará una etiqueta para identificar unos buenos valores en las Core Web Vitals. </p><a href="https://emirodgar.com/etiqueta-pagina-rapida" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Marzo 2020</span><h2 class="title">Google no interactuará con los botones de 'cargar más'</h2><p class="text">Para ahorrar costes, Google no interactuará con los botones de ver más. Si cargamos información a través de Javascript, no será accesible pero si lo hacemos a través de CSS (ocultar/mostrar) no tendremos problemas. </p><a href="https://twitter.com/Marie_Haynes/status/1234559842158891008" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Marzo 2020</span><h2 class="title">Google incoporará iconos en las imágenes</h2><p class="text">En las búsquedas de escritorio podremos ver una serie de iconos en las búsquedas de imágenes que nos indicarán si pertenecen a productos, recetas o a contenido de un vídeo.</p><a href="https://twitter.com/searchliaison/status/1232426759770886144" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Marzo 2020</span><h2 class="title">Los atributos de enlace aún no son usados por Google</h2><p class="text">El 1 de marzo de 2020 era la fecha en la que Google comenzaría a usar los enlaces nofollow como hint para rastreo e indexación. De momento, según confirma John Mueller, ningún equipo está haciendo uso de esta funcaionalidad.</p><a href="https://twitter.com/KyleW_Sutton/status/1232767353110355971" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Marzo 2020</span><h2 class="title">Indexación mobile-first para todas las páginas</h2><p class="text">Google avisa de que en los próximos 6-12 meses aplicará la indexación mobile-first para todas las páginas. Si tu web aún no está adaptada -o tiene problemas- deberías trabajar en solucionarlos.</p><a href="https://webmasters.googleblog.com/2020/03/announcing-mobile-first-indexing-for.html" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Marzo 2020</span><h2 class="title">Al migrar dominios mantén ambos certificados SSL</h2><p class="text">Si hacemos una migración de un dominio a otro, Google nos recomienda mantener un certificado SSL en el viejo para evitar problemas.</p><a href="https://twitter.com/JohnMu/status/1235251254797971457" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">Si Google no te indexa el problema será tu contenido</h2><p class="text">John lo ha dejado bastante claro a través de Twitter: si tienes problemas con la indexación de nuevas páginas, quizá sea que Googlebot no las considera relevantes y deberías optimizarlas.</p><a href="https://twitter.com/JohnMu/status/1224373191310704640" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">Actualización de algoritmo no oficial</h2><p class="text">Aunque Google no lo ha hech oficial, queda confirmado que durante febrero ha habido un cambio en el algoritmo de búsqueda mucho más grande que los de diciembre y enero.</p><a href="https://twitter.com/rustybrick/status/1227619872051363841" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">Gestiona cambios de dominio desde Search Console</h2><p class="text">Google Search Console incorpora nuevas herramientas para validar la correcta migración de un dominio y sus redirecciones asociadas.</p><a href="https://twitter.com/googlewmc/status/1229809366330564608?s=21" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">Nuevo infome para datos estructurados de valoraciones</h2><p class="text">Los resultados enriquecidos de valoraciones se actualizan y contarán con un nuevo informe en Google Search Console.</p><a href="https://webmasters.googleblog.com/2020/02/review-snippets.html" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">Los nombres de las imágenes no son un factor relevante para posicionar</h2><p class="text">Aunque muchas veces se trabaja el nombre de una imagen para que incluya palabras clave relevantes para el SEO (palabra-clave.jpg) parece que no impacta demasiado en el posicionamiento web.</p><a href="https://www.youtube.com/watch?v=RE6ATxMcDss&amp;feature=youtu.be&amp;t=717" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Febrero 2020</span><h2 class="title">El contenido de baja calidad puede no ser indexado</h2><p class="text">Google ha confirmado que si nuestro contenido no se indexa de forma automática es posible que sea de baja calidad. Por ello debemos revisar nuestra página y optimizar su contenido.</p><a href="https://twitter.com/JohnMu/status/1224373191310704640" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Retirada de URL disponible en Search Console</h2><p class="text">Google ha habilitado una opción En Search Console para solicitar la retirada temporal de URLs de nuestro sitio web o bien la eliminación de contenido obsoleto.</p><a href="https://webmasters.googleblog.com/2020/01/new-removals-report-in-search-console.html" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Actualizada la guía de Mobile First Indexing</h2><p class="text">Google ha actualizado su guía de indexación centrada en dispositivos móviles por lo que es recomendable echar un vistazo y asegurarnos de que cumplimos sus directrices.</p><a href="https://developers.google.com/search/mobile-sites/mobile-first-indexing" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Google probará nuevos lugares para los favicon</h2><p class="text">Los usuarios no estaban muy convencidos de cómo Google usaba los favicon en los resultados de búsqueda y se ha comprometido a analizarlo e intentar mostrarlo de otra forma.</p><a href="https://twitter.com/searchliaison/status/1220768238490939394" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Sin soporte para data-vocabulary.org</h2><p class="text">Los datos estructurados serán generados únicamente con schema.org. Si hacemos uso de data-vocabulary.org tendremos hasta abril 2020 para migrarlo. Desde Search Console podremos ver advertencias hasta entonces.</p><a href="https://twitter.com/googlewmc/status/1219565763759165441" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Además de HTTPS será necesario usar TLS 1.2 o superior</h2><p class="text">Google acaba de confirmar que una conexión HTTPS no será suficiente. Tenemos que hacer uso de un protocolo de cifrado 1.2 o superior.</p><a href="https://twitter.com/badams/status/1217031392607064064" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Actualización Core</h2><p class="text">Google acaba de lanzar una nueva actualización Core (13 de enero) que se desplegará durante los próximos días.</p><a href="https://twitter.com/searchliaison/status/1216766991882567680" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Google estrena un nueva plantilla</h2><p class="text">Los resultados de búsqueda contarán ahora con los iconos de las páginas asociado a cada resultado y un 'Ad' para destacar los resultados de pago.</p><a href="https://www.blog.google/products/search/new-design-google-search" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Enero 2020</span><h2 class="title">Los errores 404 o 410 funcionan igual</h2><p class="text">Nada nuevo que no supiéramos ya. Si queremos desindexar una URL debemos ofrecer un error 404 o 410. Google los va a interpretar de la misma forma.</p><a href="https://twitter.com/JohnMu/status/1214157450485604352" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Diciembre 2019</span><h2 class="title">Más precisión en los datos de Search Console</h2><p class="text">A partir del 15 de diciembre, Google Search Console ofrecerá más información en su informe de Cobertura para las páginas rastreadas pero actualmente sin indexar.</p><a href="https://twitter.com/googlewmc/status/1207341145749147654" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">Diciembre 2019</span><h2 class="title">La etiqueta canónica puede no ser suficiente</h2><p class="text">En algunos casos necesitaremos ayuda de otros factores para que Google seleccione como canónica la URL que nosotros queremos.</p><a href="https://twitter.com/methode/status/1204760229906399232" target="_blank" class="erg_button_external">Ver noticia</a></li></ul>
+		</div>
+		<div id="d_google" class="erg_messages-container" style="display:none;">
+			<ul id="erg_google_list" class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+			<li class="erg_message-item erg_lf"><span class="date">13/01/2020</span><h2 class="title">Actualización de algoritmo: Core</h2><p class="text">Primera actualización Core del 2020 por parte de Google denominada 'January 2020 Core Update'. De momento no hay información adicional.</p><a href="https://twitter.com/searchliaison/status/1216752087515586560" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">24/09/2019</span><h2 class="title">Actualización de algoritmo: Core</h2><p class="text">Una nueva actualización Core por parte de Google sin mucha información al respecto. Importante trabajar el EAT (Expertise, Authoritativeness, Trustworthiness).</p><a href="https://twitter.com/searchliaison/status/1176473923833225221" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">16/09/2019</span><h2 class="title">Actualización de algoritmo: Search Reviews Updated</h2><p class="text">Actualización para validar y modificar los datos estructurados relacionados con las validaciones. A partir de ahora el proceso será más restrictivo.</p><a href="https://twitter.com/googlewmc/status/1173612977917812736" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">06/06/2019</span><h2 class="title">Actualización de algoritmo: Site Diversity</h2><p class="text">Google anunció que quería mejorar los resultados donde un dominio aparecía múltiples veces para permitir mostrar más opciones.</p><a href="https://searchengineland.com/google-search-update-aims-to-show-more-diverse-results-from-different-domain-names-317934" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">03/06/2019</span><h2 class="title">Actualización de algoritmo: Core</h2><p class="text">Google no ha dado mucha información al respecto. Parece que las páginas afectadas por las anteriores actualizaciones Core también han sido impactadas ahora.</p><a href="https://searchengineland.com/early-data-around-the-google-june-2019-core-update-shows-some-winners-losers-317861" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">23/05/2019</span><h2 class="title">Actualización de algoritmo: Indexing Bugs</h2><p class="text">Google ha confirmado problemas en la indexación de nuevo contenido; lo ha tratado como un fallo puntual de su algoritmo y durante dos días ha trabajado en solucionarlo.</p><a href="https://searchengineland.com/google-has-fixed-the-indexing-issue-from-thursday-night-317484" target="_blank" class="erg_button_external">Ver noticia</a></li><li class="erg_message-item erg_lf"><span class="date">12/03/2019</span><h2 class="title">Actualización de algoritmo: Core</h2><p class="text">Google ha anunciado una actualización core con gran impacto. Según ellos, la tercera más grande desde que usan este tipo de actualizaciones genéricas donde no impactan sobre nada específico.</p><a href="https://searchengineland.com/google-has-released-a-broad-core-search-algorithm-update-this-week-313905" target="_blank" class="erg_button_external">Ver noticia</a></li></ul>
+		</div>
+		<div id="d_podcasts" class="erg_messages-container" style="display:none;">
+			<ul id="erg_podcasts_list" class="erg_message-list">
+				<li class="erg_message-item erg_loption">
+					<input type="text" class="erg_filter" value="Filtrar">
+				</li>
+			<li class="erg_message-item erg_lf"><h2 class="title">Paradisers</h2><p class="text">Podcast en español con varias publicaciones mensuales que explora las bases del SEO y el marketing general. Muy recomendable para cuando estamos comenzando.</p><a href="https://www.ivoox.com/podcast-paradisers_sq_f1687171_1.html" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Search Buzz</h2><p class="text">Barry Schwartz de Search Engine Roundtable repasa cada sábado lo más destacado de Roundtable para ayudarnos a estar actualizados. Cada episodio dura una media de 10 minutos.</p><a href="https://www.seroundtable.com/category/videos" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Voices of Search</h2><p class="text">Jordan Koene de Search Metrics publica dos veces por semana sencillas estrategias SEO listas para ser usadas en cualquier página.</p><a href="https://blog.searchmetrics.com/us/tag/podcasts/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Search Talk Live</h2><p class="text">Matt Weber, Robert O’Haver, y Michelle Stinson hablan cada martes de las últimas tendencias del mundo SEO. Puedes participar enviando preguntas que contestan en sus debates.</p><a href="http://searchtalklive.com/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Experts on the Wire</h2><p class="text">Dan Shure publica mensualmente estrategias SEO a nivel práctico que podemos replicar en nuestras páginas.</p><a href="http://www.evolvingseo.com/category/podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Digital Download</h2><p class="text">Joe Kerschbaum de la empresa 3Q entrevista mensualmente a líderes del marketing digital. Ideal para estar al tanto de tendencias y herramientas para trabajar tu marca.</p><a href="https://3qdigital.com/resources/podcast" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">The Digital Marketing</h2><p class="text">Ciaran Rogers y Daniel Rowles de Target Internet hablan cada dos semanas de múltiples temas relacionados con estrategias digitales. Son extensos pero recomendables. Llevan más de 9 años.</p><a href="https://www.targetinternet.com/digital-marketing-podcasts/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Edge of the web</h2><p class="text">Erin Sparks de Site Strategies publica varias veces a la semana para mantenernos actualizados de las novedades del sector. No sólo habla de SEO sino también de Social Media, Content Marketing, etc.</p><a href="https://edgeofthewebradio.com/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Business of digital</h2><p class="text">Dave Rohrer y Matt Siltala publican todos los sábados un podcast de 20 minutos orientado al crecimiento de marca digital. Ideal para empresas pequeñas y medianas.</p><a href="https://www.businessof.digital/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Internet Marketing Podcast</h2><p class="text">Andy White de Site Visibility publica cada miércoles acciones SEO específicas que podemos implementar para mejorar nuestra estrategia digital.</p><a href="https://www.sitevisibility.co.uk/blog/category/podcast/#gref" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Marketing over Coffee</h2><p class="text">John Wall, Christopher Penn y múltiples invitados hablan cada semana acerca del mundo digital y su evolución. Ideal para estar informado a nivel genérico.</p><a href="https://www.marketingovercoffee.com/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Exposure Ninja Digital Marketing</h2><p class="text">Tim Cameron-Kitchen de Exposure Ninja propone cada martes un reto digital. Siempre se aprende algo interesante y fácilmente trasladable a nuestra estrategia.</p><a href="https://exposureninja.com/podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Marketing Scoop</h2><p class="text">Judith Lewis y David Bain de SEMRush profundizan cada martes en las tendencias digitales. A veces traen algún experto para hacer debates de interés</p><a href="https://www.semrush.com/podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Marketing school</h2><p class="text">Neil Patel y Eric Siu publican cada día acerca de la evolución del mercado digital. Ofrecen trucos, consejos y también permiten enviar preguntas.</p><a href="https://marketingschool.io/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">The Recipe for SEO Success</h2><p class="text">Kate Toon realiza publicaciones SEO todos los martes. Algunas son básicas para recién iniciados, otras son más avanzadas. Son extensas pero no suelen superar la hora.</p><a href="https://therecipeforseosuccess.com/category/podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">SEOBits</h2><p class="text">Rebecca Gill habla todos los lunes acerca de las estrategias y acciones SEO que deberíamos trabajar. La duración media suele ser de 15 minutos.</p><a href="https://www.seobits.fm/podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Webcology</h2><p class="text">Jim Hedger y Dave Davies de Webmaster Radio FM hablan cada jueves de la evolución de los algoritmos de búsqueda y estrategias SEO que son tendencia.</p><a href="http://www.webmasterradio.fm/shows/webcology" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">BrightonSEO</h2><p class="text">Cada día se publican varios podcasts de ponentes del BrightonSEO así como debates con invitados que tratan temas de actualidad sobre posicionamiento orgánico.</p><a href="https://brightonseo.libsyn.com/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">Digital Cast</h2><p class="text">Mickey Mellen publica varias veces por semana episodios de dos minutos en los que resume la actualidad del mundo digital, en especial del SEO.</p><a href="https://digitalcast.org/" target="_blank" class="erg_button_external">Escuchar podcast</a></li><li class="erg_message-item erg_lf"><h2 class="title">The Affiliate Guy</h2><p class="text">Cada semana Matt McWilliams habla durante 15 minutos sobre estrategias de afiliación para facilitar el crecimiento en este área.</p><a href="https://www.mattmcwilliams.com/affiliate-guy-daily-podcast/" target="_blank" class="erg_button_external">Escuchar podcast</a></li></ul>
+		</div>
+		<div id="d_contact" class="erg_messages-container" style="display:none;">
+			<ul id="erg_contact_list" class="erg_message-list">
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">¿Quién soy?</h2>
+					<p class="text">Me llamo Emilio y soy un apasionado de la tecnología y del markerting digital. Trabajo en SEO desde hace más de 10 años. He pasado por varias agencias digitales y trabajado en múltiples proyectos internacionales.</p>
+					<p>Actualmente trabajo como Director SEO en Smartup y lo compagino dando clases en Universidades y Escuelas de Negocio. Estoy homologado por ICEX Next España.</p>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Página web</h2>
+					<p class="text">A través de mi página web podrás conocer mi trayectoria profesional y estar al día con las publicaciones que hago relacionadas con el SEO.</p>
+					<a target="_blank" href="https://emirodgar.com/" class="erg_button_external erg_button_val">Visitar web</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">Twitter</h2>
+					<p class="text">Suelo publicar con cierta asiduidad sobre tecnología y SEO. Me encantan los debates en los que se puede aprender.</p>
+					<a target="_blank" href="https://twitter.com/emirodgar" class="erg_button_external erg_button_val">Visitar perfil</a>
+				</li>
+				<li class="erg_message-item erg_lf">
+					<h2 class="title">LinkedIn</h2>
+					<p class="text">Me gusta publicar con frecuencia tema relativos al marketing digital y debatir con perfiles afines.</p>
+					<a target="_blank" href="https://es.linkedin.com/in/emirodgar" class="erg_button_external erg_button_val">Visitar perfil</a>
+				</li>
+			</ul>
+		</div>
+
+		<script type="text/javascript" src="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript" src="chrome-extension://nlelfnhiohbflhkhomefbekimmbeahng/popup.js"></script>
+	
+
+</body></html>
