@@ -368,7 +368,12 @@ ul.list-numbers li {
 	padding: 20px;
 }
 
-.footer-img { margin-top: -90px; }
+/*.footer-img { margin-top: -90px; }*/
+.footer-img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
 
 /* Responsive Device less than 768px (.device-sm <)
 -----------------------------------------------------------------*/
@@ -465,4 +470,10 @@ ol.list-numbers li::before {
 	margin-right: 7px;
 	color: var(--themecolor, #267DF4);
 	font-weight: 700;
+}
+
+.img-about{
+	width:  400px;
+    height: 400px;
+    object-fit: cover;
 }
