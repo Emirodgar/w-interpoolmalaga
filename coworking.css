@@ -477,3 +477,17 @@ ol.list-numbers li::before {
     height: 400px;
     object-fit: cover;
 }
+
+#servicios:before {
+    display: block;
+    content: "";
+    height: 50px;
+    margin: -50px 0 0;
+}
+
+#nosotros:before {
+    display: block;
+    content: "";
+    height: 60px;
+    margin: -60px 0 0;
+}
